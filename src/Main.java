@@ -4,7 +4,7 @@ public class Main {
         Charity charity2 = new Charity("Make-A-Wish", "Helping children");
 
         Donation donation1 = new Donation("ronaldo@gmail.com", 1000);
-        Donation donation2 = new Donation("ronaldo@gmail.com", 2000000);
+        Donation donation2 = new Donation("ronaldo@gmail.com", 2000);
 
         Donor donor = new Donor("Ronaldo",38);
 
