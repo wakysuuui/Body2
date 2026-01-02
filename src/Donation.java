@@ -1,24 +1,94 @@
-public class Donation {
-    private String email;
-    private int amountmoney;
+import java.time.LocalDate;
+import java.util.Objects;
 
-    public Donation(String email, int amountmoney) {
-        this.email = email;
-        this.amountmoney = amountmoney;
+public abstract class Donation {
+    private Donor donor;
+    private Charity charity;
+    private LocalDate date;
+
+    protected Donation(Donor donor, Charity charity, LocalDate date) {
+        this.donor = donor;
+        this.charity = charity;
+        this.date = date;
     }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public int getAmountmoney() {
-        return amountmoney;
-    }
-    public void setAmountmoney(int amountmoney) {
-        this.amountmoney = amountmoney;
-    }
+
+    public Donor getDonor() { return donor; }
+    public Charity getCharity() { return charity; }
+    public LocalDate getDate() { return date; }
+
+    public void setDonor(Donor donor) { this.donor = donor; }
+    public void setCharity(Charity charity) { this.charity = charity; }
+    public void setDate(LocalDate date) { this.date = date; }
+
+    // Polymorphic behavior: each donation type defines its own "value"
+    public abstract int getAmount();
+
+    @Override
     public String toString() {
-        return "Donation{" + "email=" + email + ", amountmoney=" + amountmoney + '}';
+        return getClass().getSimpleName() + "{donor=" + donor + ", charity=" + charity +
+                ", date=" + date + ", amount=" + getAmount() + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Donation donation = (Donation) o;
+        return Objects.equals(donor, donation.donor) &&
+                Objects.equals(charity, donation.charity) &&
+                Objects.equals(date, donation.date) &&
+                getAmount() == donation.getAmount();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(donor, charity, date, getAmount());
+    }
+}
+
+// Money donation implementation
+class MoneyDonation extends Donation {
+    private int amountMoney;
+
+    public MoneyDonation(Donor donor, Charity charity, LocalDate date, int amountMoney) {
+        super(donor, charity, date);
+        this.amountMoney = amountMoney;
+    }
+
+    public int getAmountMoney() { return amountMoney; }
+    public void setAmountMoney(int amountMoney) { this.amountMoney = amountMoney; }
+
+    @Override
+    public int getAmount() {
+        return amountMoney;
+    }
+}
+
+// Goods donation implementation (example: convert items to "value")
+class GoodsDonation extends Donation {
+    private String item;
+    private int estimatedValue;
+
+    public GoodsDonation(Donor donor, Charity charity, LocalDate date, String item, int estimatedValue) {
+        super(donor, charity, date);
+        this.item = item;
+        this.estimatedValue = estimatedValue;
+    }
+
+    public String getItem() { return item; }
+    public int getEstimatedValue() { return estimatedValue; }
+
+    public void setItem(String item) { this.item = item; }
+    public void setEstimatedValue(int estimatedValue) { this.estimatedValue = estimatedValue; }
+
+    @Override
+    public int getAmount() {
+        return estimatedValue;
+    }
+
+    @Override
+    public String toString() {
+        return "GoodsDonation{donor=" + getDonor() + ", charity=" + getCharity() + ", date=" + getDate() +
+                ", item='" + item + "', estimatedValue=" + estimatedValue + "}";
     }
 }
