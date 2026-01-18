@@ -1,70 +1,55 @@
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class Main {
+
+    private static final String URL =
+            "jdbc:postgresql://localhost:5432/charity_db";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "0000";
+
     public static void main(String[] args) {
-        Charity liveStrong = new Charity("LiveStrong", "Fighting with cancer");
-        Charity makeAWish = new Charity("Make-A-Wish", "Helping children");
 
-        Donor ronaldo = new Donor("Ronaldo", 41, "ronaldo@gmail.com");
-        Donor messi = new Donor("Messi", 38, "messi@gmail.com");
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement()) {
 
-        // Data pool
-        List<Donation> donations = new ArrayList<>();
-        donations.add(new MoneyDonation(ronaldo, liveStrong, LocalDate.of(2026, 1, 2), 1000));
-        donations.add(new MoneyDonation(messi, makeAWish, LocalDate.of(2026, 1, 2), 2000));
-        donations.add(new GoodsDonation(messi, liveStrong, LocalDate.of(2026, 1, 1), "Medicines", 700));
+            // -------- DONOR TABLE OUTPUT --------
+            System.out.println("DONORS:");
+            System.out.println("ID | Name | Age | Email");
 
-        // Print (toString)
-        donations.forEach(System.out::println);
+            ResultSet donors =
+                    stmt.executeQuery("SELECT * FROM donor");
 
-        // Filtering: donations for a specific charity
-        List<Donation> forLiveStrong = donations.stream()
-                .filter(d -> d.getCharity().getName().equalsIgnoreCase("LiveStrong"))
-                .collect(Collectors.toList());
+            while (donors.next()) {
+                System.out.println(
+                        donors.getInt("id") + " | " +
+                                donors.getString("name") + " | " +
+                                donors.getInt("age") + " | " +
+                                donors.getString("email")
+                );
+            }
 
-        System.out.println("\nFiltered (LiveStrong):");
-        forLiveStrong.forEach(System.out::println);
+            System.out.println();
 
-        // Searching: find first donation by donor name
-        Optional<Donation> firstFromMessi = donations.stream()
-                .filter(d -> d.getDonor().getName().equalsIgnoreCase("Messi"))
-                .findFirst();
+            // -------- CHARITY TABLE OUTPUT --------
+            System.out.println("CHARITIES:");
+            System.out.println("ID | Name | Purpose");
 
-        System.out.println("\nSearch (first donation from Messi):");
-        System.out.println(firstFromMessi.orElse(null));
+            ResultSet charities =
+                    stmt.executeQuery("SELECT * FROM charity");
 
-        // Sorting: by amount descending
-        List<Donation> sortedByAmountDesc = donations.stream()
-                .sorted(Comparator.comparingInt(Donation::getAmount).reversed())
-                .collect(Collectors.toList());
+            while (charities.next()) {
+                System.out.println(
+                        charities.getInt("id") + " | " +
+                                charities.getString("name") + " | " +
+                                charities.getString("purpose")
+                );
+            }
 
-        System.out.println("\nSorted (amount desc):");
-        sortedByAmountDesc.forEach(System.out::println);
-
-        // Example comparison (who donated more in money donations)
-        int ronaldoMoney = donations.stream()
-                .filter(d -> d instanceof MoneyDonation)
-                .filter(d -> d.getDonor().equals(ronaldo))
-                .mapToInt(Donation::getAmount)
-                .sum();
-
-        int messiMoney = donations.stream()
-                .filter(d -> d instanceof MoneyDonation)
-                .filter(d -> d.getDonor().equals(messi))
-                .mapToInt(Donation::getAmount)
-                .sum();
-
-        if (ronaldoMoney > messiMoney) {
-            System.out.println("\nRonaldo donated more money.");
-        } else if (ronaldoMoney < messiMoney) {
-            System.out.println("\nMessi donated more money.");
-        } else {
-            System.out.println("\nRonaldo == Messi (money donations).");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
