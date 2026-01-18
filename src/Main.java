@@ -15,7 +15,6 @@ public class Main {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement()) {
 
-            // -------- DONOR TABLE OUTPUT --------
             System.out.println("DONORS:");
             System.out.println("ID | Name | Age | Email");
 
@@ -33,7 +32,6 @@ public class Main {
 
             System.out.println();
 
-            // -------- CHARITY TABLE OUTPUT --------
             System.out.println("CHARITIES:");
             System.out.println("ID | Name | Purpose");
 

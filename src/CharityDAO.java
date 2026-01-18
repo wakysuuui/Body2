@@ -18,7 +18,6 @@ public class CharityDAO {
         }
     }
 
-    // READ
     public static void getAllCharities() throws SQLException {
         String sql = "SELECT * FROM charity";
 
@@ -36,7 +35,6 @@ public class CharityDAO {
         }
     }
 
-    // UPDATE
     public static void updateCharityPurpose(int id, String purpose)
             throws SQLException {
 
@@ -52,7 +50,6 @@ public class CharityDAO {
         }
     }
 
-    // DELETE
     public static void deleteCharity(int id) throws SQLException {
         String sql = "DELETE FROM charity WHERE id = ?";
 

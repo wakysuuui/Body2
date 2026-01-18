@@ -2,7 +2,6 @@ import java.sql.*;
 
 public class DonorDAO {
 
-    // CREATE
     public static void insertDonor(Donor donor) throws SQLException {
         String sql =
                 "INSERT INTO donor(name, age, email) VALUES (?, ?, ?)";
@@ -17,7 +16,6 @@ public class DonorDAO {
         }
     }
 
-    // READ
     public static void getAllDonors() throws SQLException {
         String sql = "SELECT * FROM donor";
 
@@ -36,7 +34,6 @@ public class DonorDAO {
         }
     }
 
-    // UPDATE
     public static void updateDonorEmail(int id, String email)
             throws SQLException {
 
@@ -52,7 +49,6 @@ public class DonorDAO {
         }
     }
 
-    // DELETE
     public static void deleteDonor(int id) throws SQLException {
         String sql = "DELETE FROM donor WHERE id = ?";
 

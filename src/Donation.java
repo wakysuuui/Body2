@@ -20,7 +20,6 @@ public abstract class Donation {
     public void setCharity(Charity charity) { this.charity = charity; }
     public void setDate(LocalDate date) { this.date = date; }
 
-    // Polymorphic behavior: each donation type defines its own "value"
     public abstract int getAmount();
 
     @Override
@@ -46,7 +45,6 @@ public abstract class Donation {
     }
 }
 
-// Money donation implementation
 class MoneyDonation extends Donation {
     private int amountMoney;
 
@@ -64,7 +62,6 @@ class MoneyDonation extends Donation {
     }
 }
 
-// Goods donation implementation (example: convert items to "value")
 class GoodsDonation extends Donation {
     private String item;
     private int estimatedValue;
